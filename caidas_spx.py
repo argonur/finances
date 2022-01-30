@@ -44,7 +44,7 @@ with open('HistoricalData_spx.csv', 'r') as csvfile:
                     if inDecline :
                         print("Minimum: " + str(minimumValue) + " at " + minimumDate )
                         maximumDecline = 100 * (1 - minimumValue/allTimeHigh)
-                        print("Decline of: " + str(maximumDecline) + "%")
+                        print("Decline of: " + str(round(maximumDecline, 2)) + "%")
                         print("Decline end at " + row[0])
                         print("**************************************************")
                         
