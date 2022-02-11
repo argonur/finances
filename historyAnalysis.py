@@ -1,15 +1,53 @@
+#!/usr/bin/env python3
+"""Analyse historical data of financial assets
+
+Usage:
+
+    python3 historyAnalysis
 """
-This script intends to detect the x% or more declines 
-"""
+
 
 import csv
+import sys
 
-declinePercentage = 7.0
 
-with open('HistoricalData_spx.csv', 'r') as csvfile:
+def readFile(fileName):
+    """Reads a csv file in an inverted order and stores it in a collection
 
-    data = csv.reader(reversed(list(csvfile)), delimiter = ',')
+      Args:
+          fileName: The fully qualified name of the file
 
+      Returns:
+          A collection with the inverted content of the csv file
+    """
+    with open(fileName, 'r') as csvfile:
+        data = csv.reader(reversed(list(csvfile)), delimiter = ',')
+        return data
+
+
+def printRows(data):
+    """Prints all the rows in a collection.
+
+      Args:
+        data: The collection
+    """
+    for row in data:
+        print(row)
+
+
+def findDeclines(fileName, percentage, path='data/'):
+    """Finds the number of declines given a percentage
+
+      Args:
+          fileName: The name of the file
+          percentage: Decline percentage to search in the historic data
+          path: The path where the file is located (data/ folder if not specified)
+
+      Returns:
+          Nothing at the moment
+    """
+    qualifiedName = path + fileName
+    data = readFile(qualifiedName)
     inDecline = False
     declineFound = False
     i = 0
@@ -26,10 +64,10 @@ with open('HistoricalData_spx.csv', 'r') as csvfile:
                 maximumValue = float(row[1])
                 allTimeMinimum = float(row[1])
                 minimumValue = float(row[1])
-                declineValue = maximumValue * (1.0 - declinePercentage/100.0)
+                declineValue = maximumValue * (1.0 - percentage/100.0)
                 print("**************************************************")
                 print("Data initialized")
-                print("Searching declines greater or equal to " + str(declinePercentage) + "%")
+                print("Searching declines greater or equal to " + str(percentage) + "%")
                 print("Starting Date: " + row[0])
                 print("**************************************************")
 
@@ -48,7 +86,7 @@ with open('HistoricalData_spx.csv', 'r') as csvfile:
                         print("Decline end at " + row[0])
                         print("**************************************************")
                         
-                    declineValue = maximumValue * (1.0 - declinePercentage/100.0)
+                    declineValue = maximumValue * (1.0 - percentage/100.0)
                     allTimeHigh = maximumValue
                     allTimeHighDate = row[0]
                     inDecline = False
@@ -61,7 +99,7 @@ with open('HistoricalData_spx.csv', 'r') as csvfile:
                     print("**************************************************")
                     print("Maximum: " + str(allTimeHigh) + " at " + allTimeHighDate )
                     print("Decline found: " + row[1] + " at " + declineDate)
-           
+        
             endDate = row[0]
             
             # check for all time minimum
@@ -87,10 +125,26 @@ with open('HistoricalData_spx.csv', 'r') as csvfile:
             #print(row[0] + "    " + row[1])
             continue
 
-
     print("**************************************************")
     print("End date: " + endDate)
     print("All time high: " + str(allTimeHigh) + " at " +allTimeHighDate)
     print("All time minimum: " + str(allTimeMinimum) + " at " + allTimeMinimumDate)
     print("Total number of declines: " + str(numberOfDeclines))
     print("**************************************************")
+
+
+#def displayHelp():
+
+
+def printArguments():
+    print(sys.argv[0])
+    print(sys.argv[1])
+
+
+def main():
+#    help(readFile)
+    printArguments()
+
+
+if __name__ == '__main__' :
+    main()
