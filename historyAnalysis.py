@@ -90,6 +90,7 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
     i = 0
     numberOfDeclines = 0
     endDate = ""
+    declinesDuration = []
 
     for row in data:
         
@@ -122,6 +123,7 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
                         print("Decline of: " + str(round(maximumDecline, 2)) + "%")
                         print("Decline end at " + humanReadableDate(row[0]))
                         declineDuration = calculateDuration(allTimeHighDate, row[0])
+                        declinesDuration.append(declineDuration)
                         print("Decline duration: " + str(declineDuration) + " days")
                         print("**************************************************")
                         
@@ -162,6 +164,12 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
         except :
             #print("Exception found: " + str(i))
             #print(row[0] + "    " + row[1])
+            if inDecline :
+                print("Minimum: " + str(minimumValue) + " at " + humanReadableDate(minimumDate))
+                maximumDecline = 100 * (1 - minimumValue/allTimeHigh)
+                print("Decline of: " + str(round(maximumDecline, 2)) + "% untill now")
+                declineDuration = calculateDuration(allTimeHighDate, endDate)
+                print("Elapsed days: " + str(declineDuration) + " days")
             continue
 
     print("**************************************************")
@@ -169,7 +177,12 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
     print("All time high: " + str(allTimeHigh) + " at " + humanReadableDate(allTimeHighDate))
     print("All time minimum: " + str(allTimeMinimum) + " at " + humanReadableDate(allTimeMinimumDate))
     print("Total number of declines: " + str(numberOfDeclines))
+    print("Average decline duration: " + str(int(getAverage(declinesDuration))) + " days")
     print("**************************************************")
+
+
+def getAverage(list):
+    return sum(list)/len(list)
 
 
 #def displayHelp():
