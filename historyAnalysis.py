@@ -35,7 +35,7 @@ def printRows(data):
         print(row)
 
 
-def findDeclines(fileName, percentage, path='data/'):
+def findDeclines(index, percentage, path='data/HistoricalData_'):
     """Finds the number of declines given a percentage
 
       Args:
@@ -46,7 +46,8 @@ def findDeclines(fileName, percentage, path='data/'):
       Returns:
           Nothing at the moment
     """
-    qualifiedName = path + fileName
+    fileExtension = ".csv"
+    qualifiedName = path + index + fileExtension
     data = readFile(qualifiedName)
     inDecline = False
     declineFound = False
@@ -139,12 +140,19 @@ def findDeclines(fileName, percentage, path='data/'):
 def printArguments():
     print(sys.argv[0])
     print(sys.argv[1])
+    print(sys.argv[2])
 
 
-def main():
+def main(index, percentage, function = "decline"):
 #    help(readFile)
     printArguments()
+    if function == "decline":
+        findDeclines(index, percentage)
 
 
 if __name__ == '__main__' :
-    main()
+
+    index = sys.argv[1]
+    percentage = float(sys.argv[2])
+    function = "decline"
+    main(index, percentage, function)
