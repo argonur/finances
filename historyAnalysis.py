@@ -9,6 +9,7 @@ Usage:
 
 import csv
 import sys
+import datetime
 
 
 def readFile(fileName):
@@ -33,6 +34,36 @@ def printRows(data):
     """
     for row in data:
         print(row)
+
+
+def humanReadableDate(date):
+    """Coverts a date string with monkey format(%m/%d/%Y) into a human readable one (%d.%m.%Y)
+
+      Args:
+          date: string containing a date in a monkey format (%m/%d/%Y)
+
+      Returns:
+          A date in a human readable format (%d.%m.%Y)
+    """
+    dateVar = datetime.datetime.strptime(date, '%m/%d/%Y').date()
+    formatedDate = datetime.datetime.strftime(dateVar, '%d.%m.%Y')
+    return formatedDate
+
+
+def calculateDuration(date1, date2):
+    """Calculates duration in days between to dates
+
+      Args:
+          date1: string containing the start date in a monkey format (%m/%d/%Y)
+          date1: string containing the end date in a monkey format (%m/%d/%Y)
+
+      Returns:
+          Duration in days between start and end dates
+    """
+    dateVar1 = datetime.datetime.strptime(date1, '%m/%d/%Y').date()
+    dateVar2 = datetime.datetime.strptime(date2, '%m/%d/%Y').date()
+    timeDelta = dateVar2 - dateVar1
+    return timeDelta.days
 
 
 def findDeclines(index, percentage, path='data/HistoricalData_'):
@@ -69,7 +100,7 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
                 print("**************************************************")
                 print("Data initialized")
                 print("Searching declines greater or equal to " + str(percentage) + "%")
-                print("Starting Date: " + row[0])
+                print("Starting Date: " + humanReadableDate(row[0]))
                 print("**************************************************")
 
             i+=1
@@ -81,10 +112,12 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
                 if maximumValue >= allTimeHigh :
 
                     if inDecline :
-                        print("Minimum: " + str(minimumValue) + " at " + minimumDate )
+                        print("Minimum: " + str(minimumValue) + " at " + humanReadableDate(minimumDate))
                         maximumDecline = 100 * (1 - minimumValue/allTimeHigh)
                         print("Decline of: " + str(round(maximumDecline, 2)) + "%")
-                        print("Decline end at " + row[0])
+                        print("Decline end at " + humanReadableDate(row[0]))
+                        declineDuration = calculateDuration(allTimeHighDate, row[0])
+                        print("Decline duration: " + str(declineDuration) + " days")
                         print("**************************************************")
                         
                     declineValue = maximumValue * (1.0 - percentage/100.0)
@@ -98,8 +131,8 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
                     declineFound = True
                     declineDate = row[0]
                     print("**************************************************")
-                    print("Maximum: " + str(allTimeHigh) + " at " + allTimeHighDate )
-                    print("Decline found: " + row[1] + " at " + declineDate)
+                    print("Maximum: " + str(allTimeHigh) + " at " + humanReadableDate(allTimeHighDate))
+                    print("Decline found: " + row[1] + " at " + humanReadableDate(declineDate))
         
             endDate = row[0]
             
@@ -127,9 +160,9 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
             continue
 
     print("**************************************************")
-    print("End date: " + endDate)
-    print("All time high: " + str(allTimeHigh) + " at " +allTimeHighDate)
-    print("All time minimum: " + str(allTimeMinimum) + " at " + allTimeMinimumDate)
+    print("End date: " + humanReadableDate(endDate))
+    print("All time high: " + str(allTimeHigh) + " at " + humanReadableDate(allTimeHighDate))
+    print("All time minimum: " + str(allTimeMinimum) + " at " + humanReadableDate(allTimeMinimumDate))
     print("Total number of declines: " + str(numberOfDeclines))
     print("**************************************************")
 
