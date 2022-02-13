@@ -3,7 +3,12 @@
 
 Usage:
 
-    python3 historyAnalysis
+    Make the python script executable (chmod +x historyAnalysis.py) and call it as follows
+    ./historyAnalysis index percentage function
+    where 
+        index: spx, nasdaq
+        percentage: the percentage
+        function: the function (declines by default, currently the only one available)
 """
 
 
