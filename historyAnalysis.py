@@ -202,7 +202,6 @@ def main(index, percentage, function = "decline"):
 
 
 if __name__ == '__main__' :
-
     index = sys.argv[1]
     percentage = float(sys.argv[2])
     function = "decline"
