@@ -89,6 +89,7 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
     declineFound = False
     i = 0
     numberOfDeclines = 0
+    startDate = ""
     endDate = ""
     declinesDuration = []
 
@@ -96,23 +97,27 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
         
         try :
 
+            currentValue = float(row[1])
+            currentDate = row[0]
+
             # initialize data
             if i == 0 :
-                allTimeHigh = float(row[1])
-                maximumValue = float(row[1])
-                allTimeMinimum = float(row[1])
-                minimumValue = float(row[1])
+                allTimeHigh = currentValue
+                maximumValue = currentValue
+                allTimeMinimum = currentValue
+                minimumValue = currentValue
                 declineValue = maximumValue * (1.0 - percentage/100.0)
                 print("**************************************************")
                 print("Data initialized")
                 print("Searching declines greater or equal to " + str(percentage) + "%")
-                print("Starting Date: " + humanReadableDate(row[0]))
+                startDate = currentDate
+                print("Starting Date: " + humanReadableDate(startDate))
                 print("**************************************************")
 
             i+=1
 
-            if maximumValue < float(row[1]) :
-                maximumValue = float(row[1])
+            if maximumValue < currentValue :
+                maximumValue = currentValue
                     
                 # check for all time high
                 if maximumValue >= allTimeHigh :
@@ -121,44 +126,44 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
                         print("Minimum: " + str(minimumValue) + " at " + humanReadableDate(minimumDate))
                         maximumDecline = 100 * (1 - minimumValue/allTimeHigh)
                         print("Decline of: " + str(round(maximumDecline, 2)) + "%")
-                        print("Decline end at " + humanReadableDate(row[0]))
-                        declineDuration = calculateDuration(allTimeHighDate, row[0])
+                        print("Decline end at " + humanReadableDate(currentDate))
+                        declineDuration = calculateDuration(allTimeHighDate, currentDate)
                         declinesDuration.append(declineDuration)
                         print("Decline duration: " + str(declineDuration) + " days")
                         print("**************************************************")
                         
                     declineValue = maximumValue * (1.0 - percentage/100.0)
                     allTimeHigh = maximumValue
-                    allTimeHighDate = row[0]
+                    allTimeHighDate = currentDate
                     inDecline = False
 
             elif not inDecline:
-                if declineValue >= float(row[1]) :
+                if declineValue >= currentValue :
                     inDecline = True
                     declineFound = True
-                    declineDate = row[0]
+                    declineDate = currentDate
                     print("**************************************************")
                     print("Maximum: " + str(allTimeHigh) + " at " + humanReadableDate(allTimeHighDate))
                     print("Decline found: " + row[1] + " at " + humanReadableDate(declineDate))
         
-            endDate = row[0]
+            endDate = currentDate
             
             # check for all time minimum
-            if allTimeMinimum > float(row[1]) :
-                allTimeMinimum = float(row[1])
-                allTimeMinimumDate = row[0]
+            if allTimeMinimum > currentValue :
+                allTimeMinimum = currentValue
+                allTimeMinimumDate = currentDate
         
             if declineFound :
                 declineFound = False
                 numberOfDeclines+=1
-                maximumValue = float(row[1])
-                minimumValue = float(row[1])
-                minimumDate = row[0]
+                maximumValue = currentValue
+                minimumValue = currentValue
+                minimumDate = currentDate
 
             if inDecline :
-                if minimumValue > float(row[1]) :
-                    minimumValue = float(row[1])
-                    minimumDate = row[0]
+                if minimumValue > currentValue :
+                    minimumValue = currentValue
+                    minimumDate = currentDate
 
         # skip titles
         except :
@@ -167,12 +172,15 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
             if inDecline :
                 print("Minimum: " + str(minimumValue) + " at " + humanReadableDate(minimumDate))
                 maximumDecline = 100 * (1 - minimumValue/allTimeHigh)
-                print("Decline of: " + str(round(maximumDecline, 2)) + "% untill now")
+                print("Maximum decline of: " + str(round(maximumDecline, 2)) + "% untill now")
+                currentDecline = 100 * (1 - currentValue/allTimeHigh)
+                print("Current decline of " + str(round(currentDecline, 2)) + "% with " + str(currentValue) + " at the " + humanReadableDate(endDate))
                 declineDuration = calculateDuration(allTimeHighDate, endDate)
                 print("Elapsed days: " + str(declineDuration) + " days")
             continue
 
     print("**************************************************")
+    print("Start date: " + humanReadableDate(startDate))
     print("End date: " + humanReadableDate(endDate))
     print("All time high: " + str(allTimeHigh) + " at " + humanReadableDate(allTimeHighDate))
     print("All time minimum: " + str(allTimeMinimum) + " at " + humanReadableDate(allTimeMinimumDate))
