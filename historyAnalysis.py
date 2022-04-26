@@ -180,13 +180,25 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
     print("Average decline duration: " + str(int(getAverage(declinesDuration))) + " days")
     print("**************************************************")
 
+def findPeriods():
+    """Creates a list of all the periods from a given time frame
+
+      Args:
+          initialDate: initial date
+          endDate: end date
+          percentage: the minimum decline percentage after a peak
+
+      Returns:
+          A list with all the periods found
+    """
+    return
 
 def getAverage(list):
     return sum(list)/len(list)
 
 
-#def displayHelp():
-
+def displayHelp():
+    pass
 
 def printArguments():
     print(sys.argv[0])
@@ -195,7 +207,6 @@ def printArguments():
 
 
 def main(index, percentage, function = "decline"):
-#    help(readFile)
     printArguments()
     if function == "decline":
         findDeclines(index, percentage)
@@ -206,3 +217,10 @@ if __name__ == '__main__' :
     percentage = float(sys.argv[2])
     function = "decline"
     main(index, percentage, function)
+
+
+class Period:
+    """A period from maximum to maximum"""
+    def __init__(self, number):
+        self._number = number
+
