@@ -70,6 +70,11 @@ def calculateDuration(date1, date2):
     timeDelta = dateVar2 - dateVar1
     return timeDelta.days
 
+def findLastDate():
+    pass
+
+def updateHistoricalData():
+    pass
 
 def findDeclines(index, percentage, path='data/HistoricalData_'):
     """Finds the number of declines given a percentage
