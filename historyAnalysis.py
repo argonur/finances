@@ -177,7 +177,7 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
             if inDecline :
                 print("Minimum: " + str(minimumValue) + " at " + humanReadableDate(minimumDate))
                 maximumDecline = 100 * (1 - minimumValue/allTimeHigh)
-                print("Maximum decline of: " + str(round(maximumDecline, 2)) + "% untill now")
+                print("Maximum decline of: " + str(round(maximumDecline, 2)) + "% until now")
                 currentDecline = 100 * (1 - currentValue/allTimeHigh)
                 print("Current decline of " + str(round(currentDecline, 2)) + "% with " + str(currentValue) + " at the " + humanReadableDate(endDate))
                 declineDuration = calculateDuration(allTimeHighDate, endDate)
@@ -230,10 +230,3 @@ if __name__ == '__main__' :
     percentage = float(sys.argv[2])
     function = "decline"
     main(index, percentage, function)
-
-
-class Period:
-    """A period from maximum to maximum"""
-    def __init__(self, number):
-        self._number = number
-
