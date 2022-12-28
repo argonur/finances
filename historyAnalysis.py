@@ -149,7 +149,7 @@ def findDeclines(index, percentage, path='data/HistoricalData_'):
                     declineDate = currentDate
                     print("**************************************************")
                     print("Maximum: " + str(allTimeHigh) + " at " + humanReadableDate(allTimeHighDate))
-                    print("Decline found: " + row[1] + " at " + humanReadableDate(declineDate))
+                    print("Decline found: " + str(currentValue) + " at " + humanReadableDate(declineDate))
         
             endDate = currentDate
             

@@ -6,17 +6,25 @@
 
 class Instant {
     +value : float
-    +date : Date
+    +date : _Date
+
+    +__init__()
+    +__str__()
 }
 
 class Period {
- +m_maximum1 : Instant
- +m_decline : Instant
- +m_minimum : Instant
- +m_maximum2 : Instant
- +m_waves : List
+ +maximum1 : Instant
+ +decline : Instant
+ +minimum : Instant
+ +declineEnd : Instant
+ +maximum2 : Instant
+ +waves : List of Instants
+ +periodDuration : timedelta
+ +declineDuration : timedelta
 
- +printSummary()
+ +__init__()
+ +__str___()
+ +calculateDurations()
  +plotPeriod()
 }
 
