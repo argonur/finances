@@ -156,13 +156,13 @@ def should_run_auto():
 
 # Símbolos y archivos
 INDEX_SYMBOLS = {
-    'S&P 500': '^GSPC',
-    'NASDAQ': '^IXIC'
+    'S&P 500': '^SPX',
+    'NASDAQ-100': '^NDX'
 }
 
 CSV_FILES = {
     'S&P 500': '../data/HistoricalData_spx.csv',
-    'NASDAQ': '../data/HistoricalData_nasdaq.csv'
+    'NASDAQ-100': '../data/HistoricalData_nasdaq.csv'
 }
 
 def update_indices(specific_date=None):
