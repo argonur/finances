@@ -90,7 +90,7 @@ def save_to_csv(data, filename):
 def get_db_connection():
     """Conexión a Neon PostgreSQL"""
     try:
-        return psycopg2.connect(os.getenv("NEON_DB_URL"))
+        return psycopg2.connect(os.getenv("NEON_PRIMARY_DB_URL"))
     except Exception as e:
         print(f"Error de conexión a DB: {e}")
         return None
@@ -178,7 +178,7 @@ def update_indices(specific_date=None):
         else:
             print(f"No se pudieron obtener datos para {name}.")
 
-def main(auto_mode=False, specific_date=None):
+def main(auto_mode=True, specific_date=None):
     if specific_date:
         print(f"\nModo fecha específica: {specific_date}")
         update_indices(specific_date)
