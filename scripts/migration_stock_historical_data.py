@@ -1,5 +1,6 @@
 import psycopg2
-import pandas as pd
+from psycopg2 import extras
+import pandas as pd 
 import os
 from dotenv import load_dotenv
 import json
@@ -54,20 +55,12 @@ def cargar_eventos(conn, activos):
     try:
         cur = conn.cursor()
         for activo in activos:
-            # Construir ruta de carpeta
             carpeta = f"./datos/{activo['nombre']}/reportes_eventos"
             
-            # Verificar si existe la carpeta
             if not os.path.exists(carpeta):
                 print(f"⚠️ Carpeta no encontrada para eventos: {carpeta}")
                 continue
-            if os.path.getsize(archivo_reciente) == 0:
-                print(f"ℹ️ Archivo vacío para eventos de {activo['nombre']}")
-                continue
                 
-            df = pd.read_csv(archivo_reciente)
-                
-            # Buscar archivo más reciente
             archivos = [f for f in os.listdir(carpeta) 
                     if f.startswith('Eventos') and f.endswith('.csv')]
             
@@ -75,12 +68,16 @@ def cargar_eventos(conn, activos):
                 print(f"ℹ️ No se encontraron eventos para {activo['nombre']}")
                 continue
                 
-            # Seleccionar archivo más reciente
             archivo_reciente = max(
                 [os.path.join(carpeta, f) for f in archivos],
                 key=os.path.getmtime
             )
             
+            # Verificar tamaño después de tener archivo_reciente
+            if os.path.getsize(archivo_reciente) == 0:
+                print(f"ℹ️ Archivo vacío para eventos de {activo['nombre']}")
+                continue
+                
             try:
                 df = pd.read_csv(archivo_reciente)
                 if df.empty:
@@ -121,51 +118,48 @@ def cargar_eventos(conn, activos):
         print(f"❌ Error cargando eventos: {e}")
         return False
 
+from psycopg2 import extras  # Añadir al inicio del script
+
 def cargar_datos_historicos(conn, activos):
-    """Carga los datos históricos a la base de datos"""
+    """Carga los datos históricos a la base de datos de manera optimizada"""
     try:
         cur = conn.cursor()
         for activo in activos:
-            # Construir ruta de carpeta
-            carpeta = f"./datos/{activo['nombre']}/datos_completos"
-            
-            # Verificar si existe la carpeta
-            if not os.path.exists(carpeta):
-                print(f"⚠️ Carpeta no encontrada para datos: {carpeta}")
-                continue
-                
-            # Buscar archivo más reciente
-            archivos = [f for f in os.listdir(carpeta) 
-                    if f.startswith('Datos_Completos') and f.endswith('.csv')]
-            
-            if not archivos:
-                print(f"ℹ️ No se encontraron datos para {activo['nombre']}")
-                continue
-                
-            # Seleccionar archivo más reciente
-            archivo_reciente = max(
-                [os.path.join(carpeta, f) for f in archivos],
-                key=os.path.getmtime
-            )
-            
             try:
+                carpeta = f"./datos/{activo['nombre']}/datos_completos"
+                if not os.path.exists(carpeta):
+                    print(f"⚠️ Carpeta no encontrada para datos: {carpeta}")
+                    continue
+                
+                # Buscar archivo más reciente
+                archivos = [f for f in os.listdir(carpeta) 
+                        if f.startswith('Datos_Completos') and f.endswith('.csv')]
+                if not archivos:
+                    print(f"ℹ️ No se encontraron datos para {activo['nombre']}")
+                    continue
+                
+                archivo_reciente = max(
+                    [os.path.join(carpeta, f) for f in archivos],
+                    key=os.path.getmtime
+                )
+                
+                # Leer y procesar datos
                 df = pd.read_csv(archivo_reciente)
                 if df.empty:
                     print(f"ℹ️ DataFrame vacío para datos de {activo['nombre']}")
                     continue
-                    
+                
                 # Normalizar nombres de columnas
                 df.columns = df.columns.str.lower().str.replace(' ', '_')
                 
                 # Buscar columna de fecha
                 fecha_col = next((col for col in df.columns if 'fecha' in col or 'date' in col), None)
-                
                 if not fecha_col:
                     print(f"❌ Columna de fecha no encontrada en {archivo_reciente}")
                     continue
-                    
-                # Definir mapeo de columnas
-                mapeo_columnas = {
+                
+                # Mapeo de columnas
+                col_map = {
                     'open': next((c for c in df.columns if 'open' in c), None),
                     'high': next((c for c in df.columns if 'high' in c), None),
                     'low': next((c for c in df.columns if 'low' in c), None),
@@ -174,17 +168,52 @@ def cargar_datos_historicos(conn, activos):
                     'volume': next((c for c in df.columns if 'volume' in c or 'volumen' in c), None)
                 }
                 
-                # Filtrar filas válidas
-                df = df.dropna(subset=[fecha_col])
+                # Crear DataFrame limpio
+                df_clean = pd.DataFrame({
+                    'fecha': pd.to_datetime(df[fecha_col], errors='coerce'),
+                    'open': df[col_map['open']] if col_map['open'] else None,
+                    'high': df[col_map['high']] if col_map['high'] else None,
+                    'low': df[col_map['low']] if col_map['low'] else None,
+                    'close': df[col_map['close']] if col_map['close'] else None,
+                    'adj_close': df[col_map['adj_close']] if col_map['adj_close'] else None,
+                    'volume': df[col_map['volume']] if col_map['volume'] else None
+                })
                 
-                # Insertar en lote
-                for _, row in df.iterrows():
-                    query = """
+                # Filtrar fechas inválidas
+                df_clean = df_clean.dropna(subset=['fecha'])
+                df_clean['fecha'] = df_clean['fecha'].dt.date
+                
+                # Convertir volumen a Int64 (permite enteros y NaN)
+                if 'volume' in df_clean.columns:
+                    df_clean['volume'] = pd.to_numeric(df_clean['volume'], errors='coerce').astype(pd.Int64Dtype())
+                
+                # Preparar datos para inserción masiva
+                data_tuples = [
+                    (
+                        activo['id'],
+                        activo['ticker'],
+                        row['fecha'],
+                        row['open'],
+                        row['high'],
+                        row['low'],
+                        row['close'],
+                        row['adj_close'],
+                        row['volume'] if 'volume' in df_clean.columns else None
+                    )
+                    for _, row in df_clean.iterrows()
+                ]
+                
+                if not data_tuples:
+                    print(f"ℹ️ No hay datos válidos para {activo['nombre']}")
+                    continue
+                
+                # Inserción masiva
+                query = """
                     INSERT INTO datos_historicos (
-                        activo_id, fecha, apertura, maximo, minimo, 
+                        activo_id, activo_nombre, fecha, apertura, maximo, minimo, 
                         cierre, cierre_ajustado, volumen
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES %s
                     ON CONFLICT (activo_id, fecha) DO UPDATE
                     SET
                         apertura = EXCLUDED.apertura,
@@ -193,31 +222,28 @@ def cargar_datos_historicos(conn, activos):
                         cierre = EXCLUDED.cierre,
                         cierre_ajustado = EXCLUDED.cierre_ajustado,
                         volumen = EXCLUDED.volumen
-                    """
-                    valores = (
-                        activo['id'],
-                        row[fecha_col],
-                        row[mapeo_columnas['open']] if mapeo_columnas['open'] and not pd.isna(row[mapeo_columnas['open']]) else None,
-                        row[mapeo_columnas['high']] if mapeo_columnas['high'] and not pd.isna(row[mapeo_columnas['high']]) else None,
-                        row[mapeo_columnas['low']] if mapeo_columnas['low'] and not pd.isna(row[mapeo_columnas['low']]) else None,
-                        row[mapeo_columnas['close']] if mapeo_columnas['close'] and not pd.isna(row[mapeo_columnas['close']]) else None,
-                        row[mapeo_columnas['adj_close']] if mapeo_columnas['adj_close'] and not pd.isna(row[mapeo_columnas['adj_close']]) else None,
-                        int(row[mapeo_columnas['volume']]) if mapeo_columnas['volume'] and not pd.isna(row[mapeo_columnas['volume']]) else None
-                    )
-                    cur.execute(query, valores)
-                    
+                """
+                extras.execute_values(
+                    cur,
+                    query,
+                    data_tuples,
+                    page_size=50  # Ajustar según necesidades
+                )
+                print(f"✅ Datos cargados para {activo['nombre']} - {len(data_tuples)} registros")
+                
             except Exception as e:
-                print(f"❌ Error procesando datos para {activo['nombre']}: {e}")
-                conn.rollback()  # Rollback de cualquier operación pendiente
-                continue  # Continuar con el siguiente activo
+                print(f"❌ Error procesando {activo['nombre']}: {e}")
+                conn.rollback()
         
         conn.commit()
         print("✅ Datos históricos cargados exitosamente")
         return True
+        
     except Exception as e:
         conn.rollback()
         print(f"❌ Error general cargando datos históricos: {e}")
         return False
+    
 
 # Cargar configuración de activos
 try:
