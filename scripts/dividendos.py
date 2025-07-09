@@ -7,7 +7,7 @@ import json
 
 # Definir fecha de inicio para los datos históricos
 FECHA_INICIO = "2000-01-01"
-FECHA_INICIO_MAXIMA = "1985-01-01"
+FECHA_INICIO_MAXIMA = "1800-01-01"
 
 def crear_estructura_carpetas(nombre_activo):
     """Crea la estructura de carpetas para un activo"""
