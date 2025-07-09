@@ -8,6 +8,38 @@
         "nombre": "NASDAQ-100"
     },
     {
+        "ticker": "^N225",
+        "nombre": "Nikkei 225"
+    },
+    {
+        "ticker": "^MXX",
+        "nombre": "IPC México"
+    },
+    {
+        "ticker": "^DJI",
+        "nombre": "Dow Jones Industrial Average"
+    },
+    {
+        "ticker": "^FTSE",
+        "nombre": "FTSE 100"
+    },
+    {
+        "ticker": "^GDAXI",
+        "nombre": "DAX 30"
+    },
+    {
+        "ticker": "^FCHI",
+        "nombre": "CAC 40"
+    },
+    {
+        "ticker": "^HSI",
+        "nombre": "Hang Seng Index"
+    },
+    {
+        "ticker": "^BSESN",
+        "nombre": "BSE Sensex"
+    },
+    {
         "ticker": "AAPL",
         "nombre": "Apple Inc."
     },
