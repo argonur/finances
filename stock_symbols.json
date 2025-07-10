@@ -1,194 +1,198 @@
 [
-    {
-        "ticker": "^SPX",
-        "nombre": "S&P500"
-    },
-    {
-        "ticker": "^NDX",
-        "nombre": "NASDAQ-100"
-    },
-    {
-        "ticker": "^N225",
-        "nombre": "Nikkei 225"
-    },
-    {
-        "ticker": "^MXX",
-        "nombre": "IPC México"
-    },
-    {
-        "ticker": "^DJI",
-        "nombre": "Dow Jones Industrial Average"
-    },
-    {
-        "ticker": "^FTSE",
-        "nombre": "FTSE 100"
-    },
-    {
-        "ticker": "^GDAXI",
-        "nombre": "DAX 30"
-    },
-    {
-        "ticker": "^FCHI",
-        "nombre": "CAC 40"
-    },
-    {
-        "ticker": "^HSI",
-        "nombre": "Hang Seng Index"
-    },
-    {
-        "ticker": "^BSESN",
-        "nombre": "BSE Sensex"
-    },
-    {
-        "ticker": "AAPL",
-        "nombre": "Apple Inc."
-    },
-    {
-        "ticker": "AMZN",
-        "nombre": "Amazon.com Inc."
-    },
-    {
-        "ticker": "ADBE",
-        "nombre": "Adobe Inc."
-    },
-    {
-        "ticker": "BABA",
-        "nombre": "Alibaba Group Holding Ltd."
-    },
-    {
-        "ticker": "BRK-A",
-        "nombre": "Berkshire Hathaway Inc."
-    },
-    {
-        "ticker": "F", 
-        "nombre": "Ford Motor Co."
-    },
-    {
-        "ticker": "TSM",
-        "nombre": "Taiwan Semiconductor Manufacturing Co."
-    },
-    {
-        "ticker": "BABA",
-        "nombre": "Alibaba Group Holding Ltd."
-    },
-    {
-        "ticker": "AAPL",
-        "nombre": "Apple Inc."
-    },
-    {
-        "ticker": "MSFT",
-        "nombre": "Microsoft Corp."
-    },
-    {
-        "ticker": "GOOGL",
-        "nombre": "Alphabet Inc."
-    },
-    {
-        "ticker": "AMZN",
-        "nombre": "Amazon.com Inc."
-    },
-    {
-        "ticker": "TSLA",
-        "nombre": "Tesla Inc."
-    },
-    {
-        "ticker": "META",
-        "nombre": "Meta Platforms Inc."
-    },
-    {
-        "ticker": "NFLX",
-        "nombre": "Netflix Inc."
-    },
-    {
-        "ticker": "NVDA",
-        "nombre": "NVIDIA Corp."
-    },
-    {
-        "ticker": "PYPL",
-        "nombre": "PayPal Holdings Inc."
-    },
-    {
-        "ticker": "CRM",
-        "nombre": "Salesforce.com Inc."
-    },
-    {
-        "ticker": "ADBE",
-        "nombre": "Adobe Inc."
-    },
-    {
-        "ticker": "INTU",
-        "nombre": "Intuit Inc."
-    },
-    {
-        "ticker": "ORCL",
-        "nombre": "Oracle Corp."
-    },
-    {
-        "ticker": "IBM",
-        "nombre": "International Business Machines Corp."
-    },
-    {
-        "ticker": "WMT",
-        "nombre": "Walmart Inc."
-    },
-    {
-        "ticker": "XOM",
-        "nombre": "Exxon Mobil Corp."
-    },
-    {
-        "ticker": "CVX",
-        "nombre": "Chevron Corp."
-    },
-    {
-        "ticker": "BRK-B",
-        "nombre": "Berkshire Hathaway Inc."
-    },
-    {
-        "ticker": "V",
-        "nombre": "Visa Inc."
-    },
-    {
-        "ticker": "JPM",
-        "nombre": "JPMorgan Chase & Co."
-    },
-    {
-        "ticker": "UNH",
-        "nombre": "UnitedHealth Group Inc."
-    },
-    {
-        "ticker": "PG",
-        "nombre": "Procter & Gamble Co."
-    },
-    {
-        "ticker": "HD",
-        "nombre": "The Home Depot Inc."
-    },
-    {
-        "ticker": "DIS",
-        "nombre": "Walt Disney Co."
-    },
-    {
-        "ticker": "VZ",
-        "nombre": "Verizon Communications Inc."
-    },
-    {
-        "ticker": "INTC",
-        "nombre": "Intel Corp."
-    },
-    {
-        "ticker": "CSCO",
-        "nombre": "Cisco Systems Inc."
-    },
-    {
-        "ticker": "PEP",
-        "nombre": "PepsiCo Inc."
-    },
-    {
-        "ticker": "KO",
-        "nombre": "Coca-Cola Co."
-    },
-    {
-        "ticker": "T",
-        "nombre": "AT&T Inc."
-    }
+  {
+    "ticker": "^VIX",
+    "nombre": "CBOE Volatility Index"
+  },
+  {
+    "ticker": "^SPX",
+    "nombre": "S&P500"
+  },
+  {
+    "ticker": "^NDX",
+    "nombre": "NASDAQ-100"
+  },
+  {
+    "ticker": "^N225",
+    "nombre": "Nikkei 225"
+  },
+  {
+    "ticker": "^MXX",
+    "nombre": "IPC México"
+  },
+  {
+    "ticker": "^DJI",
+    "nombre": "Dow Jones Industrial Average"
+  },
+  {
+    "ticker": "^FTSE",
+    "nombre": "FTSE 100"
+  },
+  {
+    "ticker": "^GDAXI",
+    "nombre": "DAX 30"
+  },
+  {
+    "ticker": "^FCHI",
+    "nombre": "CAC 40"
+  },
+  {
+    "ticker": "^HSI",
+    "nombre": "Hang Seng Index"
+  },
+  {
+    "ticker": "^BSESN",
+    "nombre": "BSE Sensex"
+  },
+  {
+    "ticker": "AAPL",
+    "nombre": "Apple Inc."
+  },
+  {
+    "ticker": "AMZN",
+    "nombre": "Amazon.com Inc."
+  },
+  {
+    "ticker": "ADBE",
+    "nombre": "Adobe Inc."
+  },
+  {
+    "ticker": "BABA",
+    "nombre": "Alibaba Group Holding Ltd."
+  },
+  {
+    "ticker": "BRK-A",
+    "nombre": "Berkshire Hathaway Inc."
+  },
+  {
+    "ticker": "F",
+    "nombre": "Ford Motor Co."
+  },
+  {
+    "ticker": "TSM",
+    "nombre": "Taiwan Semiconductor Manufacturing Co."
+  },
+  {
+    "ticker": "BABA",
+    "nombre": "Alibaba Group Holding Ltd."
+  },
+  {
+    "ticker": "AAPL",
+    "nombre": "Apple Inc."
+  },
+  {
+    "ticker": "MSFT",
+    "nombre": "Microsoft Corp."
+  },
+  {
+    "ticker": "GOOGL",
+    "nombre": "Alphabet Inc."
+  },
+  {
+    "ticker": "AMZN",
+    "nombre": "Amazon.com Inc."
+  },
+  {
+    "ticker": "TSLA",
+    "nombre": "Tesla Inc."
+  },
+  {
+    "ticker": "META",
+    "nombre": "Meta Platforms Inc."
+  },
+  {
+    "ticker": "NFLX",
+    "nombre": "Netflix Inc."
+  },
+  {
+    "ticker": "NVDA",
+    "nombre": "NVIDIA Corp."
+  },
+  {
+    "ticker": "PYPL",
+    "nombre": "PayPal Holdings Inc."
+  },
+  {
+    "ticker": "CRM",
+    "nombre": "Salesforce.com Inc."
+  },
+  {
+    "ticker": "ADBE",
+    "nombre": "Adobe Inc."
+  },
+  {
+    "ticker": "INTU",
+    "nombre": "Intuit Inc."
+  },
+  {
+    "ticker": "ORCL",
+    "nombre": "Oracle Corp."
+  },
+  {
+    "ticker": "IBM",
+    "nombre": "International Business Machines Corp."
+  },
+  {
+    "ticker": "WMT",
+    "nombre": "Walmart Inc."
+  },
+  {
+    "ticker": "XOM",
+    "nombre": "Exxon Mobil Corp."
+  },
+  {
+    "ticker": "CVX",
+    "nombre": "Chevron Corp."
+  },
+  {
+    "ticker": "BRK-B",
+    "nombre": "Berkshire Hathaway Inc."
+  },
+  {
+    "ticker": "V",
+    "nombre": "Visa Inc."
+  },
+  {
+    "ticker": "JPM",
+    "nombre": "JPMorgan Chase & Co."
+  },
+  {
+    "ticker": "UNH",
+    "nombre": "UnitedHealth Group Inc."
+  },
+  {
+    "ticker": "PG",
+    "nombre": "Procter & Gamble Co."
+  },
+  {
+    "ticker": "HD",
+    "nombre": "The Home Depot Inc."
+  },
+  {
+    "ticker": "DIS",
+    "nombre": "Walt Disney Co."
+  },
+  {
+    "ticker": "VZ",
+    "nombre": "Verizon Communications Inc."
+  },
+  {
+    "ticker": "INTC",
+    "nombre": "Intel Corp."
+  },
+  {
+    "ticker": "CSCO",
+    "nombre": "Cisco Systems Inc."
+  },
+  {
+    "ticker": "PEP",
+    "nombre": "PepsiCo Inc."
+  },
+  {
+    "ticker": "KO",
+    "nombre": "Coca-Cola Co."
+  },
+  {
+    "ticker": "T",
+    "nombre": "AT&T Inc."
+  }
 ]
