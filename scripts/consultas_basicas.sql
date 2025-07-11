@@ -83,3 +83,5 @@ WHERE
     fecha BETWEEN '2024-01-01' AND '2024-12-31'
 GROUP BY
     activo_nombre;
+
+--- Hacer prueba a partir de aqui.

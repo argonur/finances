@@ -12,7 +12,7 @@
 
 ### Como usar
 
-Dentro del directorio `/scripts/` ejecutar el siguiente comando: `python3 historical_index.py`
+Dentro del directorio `/scripts/historical_data/` ejecutar el siguiente comando: `python3 historical_index.py`
 
 ```bash
 # Salida esperada:
@@ -39,7 +39,7 @@ Seleccione una opción:
 
 ## Sistema de Migración de Datos Históricos, Dividendos y Reportes de Ajustes
 
-- El directorio `/scripts/datos` es el contenedor de todos los **datos históricos, eventos (Dividendos - Split)** de los activos o índices.
+- El directorio `/scripts/historical_data/datos` es el contenedor de todos los **datos históricos, eventos (Dividendos - Split)** de los activos o índices.
 - Si el directorio no existe, los datos no están actualizados o no existen, ejecutar el siguiente comando dentro de `/scripts`:
 
 ```bash
@@ -49,7 +49,7 @@ python3 dividendos.py
 Este comando, creara el directorio `/datos` dentro de \*/scripts, descargara y organizara toda la información dentro de directorios con el nombre del activo/índice de la siguiente manera:
 
 ```bash
-📁 /scripts/datos/
+📁 /scripts/historical_data/datos/
   ├── 📁 Apple/
   │   ├── 📁 datos_completos
   │   ├── 📁 reportes_ajustes
@@ -123,73 +123,3 @@ Conexión exitosa a NeonDB
 ```
 
 ---
-
-## Base de datos (Neón → PostgreSQL)
-
-Los Query para crear las tablas en la base de datos se detallan a continuación:
-
-- Tabla para activos
-
-```sql
-CREATE TABLE activos (
-    id SERIAL PRIMARY KEY,
-    ticker VARCHAR(20) UNIQUE NOT NULL,
-    nombre VARCHAR(100) NOT NULL,  -- ¡Quitamos UNIQUE individual!
-    tipo VARCHAR(20) CHECK (tipo IN ('indice', 'accion')),
-    UNIQUE (id, nombre)  -- Restricción compuesta necesaria
-);
-```
-
-- Tabla para eventos
-
-```sql
--- Crear tabla eventos (con redundancia controlada)
-CREATE TABLE eventos (
-    id SERIAL PRIMARY KEY,
-    activo_id INTEGER NOT NULL REFERENCES activos(id) ON DELETE CASCADE,
-    activo_nombre VARCHAR(100) NOT NULL,
-    fecha DATE NOT NULL,
-    evento NUMERIC(10,4) NOT NULL,
-    tipo VARCHAR(20) CHECK (tipo IN ('dividendo', 'split')),
-    UNIQUE (activo_id, fecha, tipo),
-    FOREIGN KEY (activo_id, activo_nombre) REFERENCES activos(id, nombre) ON UPDATE CASCADE
-);
-```
-
-- Tabla para datos históricos
-
-```sql
--- Tabla datos_historicos (redundancia controlada)
-CREATE TABLE datos_historicos (
-    id SERIAL PRIMARY KEY,
-    activo_id INTEGER NOT NULL REFERENCES activos(id) ON DELETE CASCADE,
-    activo_name VARCHAR(100) NOT NULL,
-    fecha DATE NOT NULL,
-    apertura NUMERIC(12,6),
-    maximo NUMERIC(12,6),
-    minimo NUMERIC(12,6),
-    cierre NUMERIC(12,6),
-    cierre_ajustado NUMERIC(12,6),
-    volumen BIGINT,
-    UNIQUE (activo_id, fecha),
-    FOREIGN KEY (activo_id, activo_name) REFERENCES activos(id, nombre) ON UPDATE CASCADE
-);
-```
-
-La `String` de conexión de la base de datos a nuestro script la puede generar en su Dashboard de [Neón](https://neon.com/), pegar la cadena en una variable de entorno dentro del archivo `.env` con un nombre.
-
-## Por ultimo, modificar el nombre de la variable de entorno dentro de los scripts.
-
-Querys basicos para consultar informacion de las tablas, ejecutarlas en el SQL Editor de Neón.
-
-- Consultar de la tabla activos todos los datos de la columna tickers
-
-```sql
-    SELECT * FROM activos WHERE tickers;
-```
-
-- Consultar de la tabla eventos solo los `Split`
-
-```sql
-
-```
