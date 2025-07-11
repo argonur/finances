@@ -4,10 +4,12 @@ import os
 import psycopg2
 from datetime import datetime, time, timedelta
 import pytz
-from dotenv import load_dotenv
+import sys
 
-# Cargar variables de entorno
-load_dotenv()
+# Añadir la ruta del modulo de conexion manualmente
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from db_utils.db_connection import obtener_conexion
+TIPO_CONEXION = 'neon' # 'neon' o 'local'
 
 def get_index_data(symbol, specific_date=None):
     """Obtiene los datos diarios del índice"""
@@ -87,17 +89,10 @@ def save_to_csv(data, filename):
         print(f"Error al guardar datos: {e}")
         return False
 
-def get_db_connection():
-    """Conexión a Neon PostgreSQL"""
-    try:
-        return psycopg2.connect(os.getenv("NEON_PRIMARY_DB_URL"))
-    except Exception as e:
-        print(f"Error de conexión a DB: {e}")
-        return None
 
 def save_to_database(data, index_name):
     """Guarda datos en la base de datos Neon"""
-    conn = get_db_connection()
+    conn = obtener_conexion(TIPO_CONEXION, "INDICE")
     if not conn:
         return False
     
