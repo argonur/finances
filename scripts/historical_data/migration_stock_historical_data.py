@@ -1,16 +1,16 @@
-import psycopg2
 from psycopg2 import extras
 import pandas as pd 
 import os
-from dotenv import load_dotenv
+import sys
 import json
-from db_connection import obtener_conexion
+# Añadir la ruta del modulo de conexion manualmente
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from db_utils.db_connection import obtener_conexion
 
 # Cargar Tipo de conexión de base de datos
 TIPO_CONEXION = "local" # 'local' o 'neon'
 # Conectar a la base de datos
-conn = obtener_conexion(TIPO_CONEXION)
-
+conn = obtener_conexion(TIPO_CONEXION, "HISTORICAL")
 
 def cargar_activos(conn, activos):
     """Carga los activos en la base de datos"""

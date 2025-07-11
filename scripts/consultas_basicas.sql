@@ -31,6 +31,14 @@ CREATE TABLE datos_historicos (
     UNIQUE (activo_id, fecha)
 );
 
+CREATE TABLE fear_greed (
+    id SERIAL PRIMARY KEY,
+    fecha DATE NOT NULL,
+    indice NUMERIC,
+    fear_greed_index TEXT NOT NULL,
+    UNIQUE (fecha)
+);
+
 -- Listar todos los activos
 SELECT * FROM activos ORDER BY ticker;
 

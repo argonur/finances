@@ -5,16 +5,23 @@ import sys
 
 load_dotenv()
 
-def conectar_neon():
+def conectar_neon(donde):
     """Conexión a NeonDB"""
     try:
-        conn = psycopg2.connect(
-            os.getenv("NEON_DB_URL"),
+        if donde is not "INDICE":
+            conn = psycopg2.connect(
+            os.getenv("NEON_HISTORICAL_DATA_DB_URL"),
+            sslmode='require'
+        )
+        else:
+            conn = psycopg2.connect(
+            os.getenv("NEON_PRIMARY_DB_URL"),
             sslmode='require'
         )
         print("Conexión exitosa a NeonDB")
         return conn
     except Exception as e:
+        #print(f"{donde}")
         print(f"Error conectando a Neon: {e}")
         return None
 
@@ -43,9 +50,9 @@ def conectar_local():
         print("  sudo service postgresql start")
         return None
 
-def obtener_conexion(tipo='neon'):
+def obtener_conexion(tipo='neon', donde=''):
     """Selector de conexión basado en tipo"""
     if tipo == 'local':
         return conectar_local()
     else:
-        return conectar_neon()
+        return conectar_neon(donde)
