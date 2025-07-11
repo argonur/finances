@@ -5,55 +5,61 @@ import os
 import sys
 import pandas as pd
 from fear_and_greed import get as get_fear_greed_current # Para el valor actual
-# Añadir la ruta del modulo de conexion manualmente
+
+# Añadir la ruta del modulo de conexion a la DB manualmente
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from db_utils.db_connection import obtener_conexion
 
 # Conexión a la base de datos
 TIPO_CONEXION = 'local' # 'local' o 'neon'
-conn = obtener_conexion(TIPO_CONEXION)
+conn = obtener_conexion(TIPO_CONEXION, "INDICE")
 carpeta = f"./historical_fear_greed"
 
-def load_historical_fear_greed(conn, dates):
+def load_historical_fear_greed(conn, df):
     """ Cargar a la base de datos todos los datos historicos de Fear and Greed"""
+    if df.empty:
+        print("❌ DataFrame vacío. No hay datos para cargar.")
+        return False
     try:
         cur = conn.cursor()
-        for date in dates:
-            if not os.path.exists(carpeta):
-                print(f"⚠️ Carpeta no encontrada para eventos: {carpeta}")
-                continue
-            try:
-                df = pd.read_csv('./historical_fear_greed/cnn_fear_greed_historical.csv')
-                if df.empty:
-                    print(f"ℹ️ DataFrame vacío")
-                    continue
-                # Filtrar filas vacias
-                df = df.dropna(subset=['Date', 'Value'])
+        #Validar si existe la carpeta contenedora del reporte
+        if not os.path.exists(carpeta):
+            os.makedirs(carpeta, exist_ok=True) # Creamos la carpeta si no existe
 
-                # Insertar en lote
-                for _, row in df.iterrows():
-                    query = """
-                            INSERT INTO fear_greed (fecha, indice, fear_greed_index)
-                            VALUES(%s, %s, %s)
-                            ON CONFLICT (fecha) DO UPDATE
-                            """
-                    cur.execute(query, (
-                        date['Date'],
-                        date['Value'],
-                        date['Description']
-                    ))
+        # Ruta del archivo CSV
+        archivo_dir = os.path.join(carpeta, "cnn_fear_greed_historical.csv")
+        # Guardar DataFrame en CSV (respaldo)
+        df.to_csv(archivo_dir, index=True)
+        print(f"💾 Datos guardados en: {archivo_dir}")
+
+        # Procesar cada fila del DataFrame
+        for fecha, row in df.iterrows():
+            try:
+                query = """
+                        INSERT INTO fear_greed (fecha, indice, fear_greed_index)
+                        VALUES (%s, %s, %s)
+                        ON CONFLICT (fecha) DO UPDATE SET
+                            indice = EXCLUDED.indice,
+                            fear_greed_index = EXCLUDED.fear_greed_index 
+                        """
+                cur.execute(query, (
+                    fecha.date(), # Convertir TimeStamp a fecha
+                    int(row['Value']),
+                    str(row['Description'])
+                ))
             except Exception as e:
-                print(f"❌ Error procesando datos historicos")
+                print(f"⚠️ Error insertando fila {fecha}: {e}")
+                conn.rollback()
                 continue
 
         conn.commit()
-        print("✅ Eventos cargados exitosamente")
+        print("✅ Datos cargados exitosamente en la base de datos")
         return True
+
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error cargando datos historicos: {e}")
+        print(f"❌ Error general al cargar datos: {e}")
         return False
-
 
 def get_current_cnn_fear_greed_index():
     """
@@ -147,11 +153,11 @@ if __name__ == "__main__":
         print(f"\nDatos históricos del CNN Fear & Greed Index desde {start_date.strftime('%Y-%m-%d')} hasta {end_date.strftime('%Y-%m-%d')}:")
         print(historical_df.tail()) # Mostrar las últimas 5 entradas
         print(f"\nTotal de entradas históricas: {len(historical_df)}")
-        print("\n--- Respaldo del CNN Fear & Greed Index ---")
-        load_historical_fear_greed(conn, historical_df)
         
         # Opcional: Guardar a un archivo CSV
         historical_df.to_csv("./historical_fear_greed/cnn_fear_greed_historical.csv")
         print("Datos históricos guardados en /historical_fear_greed/cnn_fear_greed_historical.csv")
+        print("\n--- Respaldo del CNN Fear & Greed Index ---")
+        load_historical_fear_greed(conn, historical_df)
     else:
         print("No se pudieron obtener datos históricos o el DataFrame está vacío.")
